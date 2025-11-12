@@ -44,19 +44,6 @@ struct RenderCommand {
 
 };
 
-enum class MSAA {
-    Off = 0,
-    One = 1,
-    Two = 2,
-    Four = 4,
-    Eight = 8,
-};
-
-enum class Vsync {
-    Adaptive = -1,
-    Off = 0,
-    On = 1
-};
 
 /* Render Context is created on Heap when App Context was created. it is a unique pointer, holded by app context.
  * Render System was created after rendercontext, so it is suggested to put some important args in Rcontext,
@@ -68,9 +55,10 @@ struct RenderContext {
 
     //graphics configs
     int windowheight, windowwidth;
-    bool resize_dirty = false;
-    Vsync vsync;//-1 is adaptive, 0 is off, 1 is on
-    MSAA msaa = MSAA::Off;
+    int vsync;//-1 is adaptive, 0 is off, 1 is on
+    int getVsync() {return vsync;}
+    void setVsync(int vsync) {this->vsync = vsync;contextDirdy = true;}
+    int msaa = 0;
     bool MSAA_dirty = false;
 
     //ctx fields
@@ -81,15 +69,18 @@ struct RenderContext {
 
     //render backends configs: NOT visible when game shipping!
     bool glcullface_enable = true;
+    bool getGlCullFace() {return glcullface_enable;}
+    void setGlCullFace(bool enable) {glcullface_enable = enable;contextDirdy = true;}
     SDL_Window* mainwindow;
     SDL_GLContext glcontext;
 
     //misc
-    void setMSAA(MSAA msaa) {
+    void setMSAA(int msaa) {
         this->msaa = msaa;
+        this->contextDirdy = true;
         this->MSAA_dirty = true;
     }
-    MSAA getMSAA() {return this->msaa;}
+    int getMSAA() {return this->msaa;}
     RTTR_ENABLE()
     RTTR_REGISTRATION_FRIEND
 };

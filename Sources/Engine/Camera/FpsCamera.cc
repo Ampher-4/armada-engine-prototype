@@ -67,6 +67,7 @@ void FPSCamera::UpdateCamera(float dt)
     viewMatrix = glm::lookAt(position, position + cameraDirection, cameraUp);
     // Optionally update projection matrix if FOV changes
     if (project_dirty) {
+        ENGINE_DEBUG("Re-construct camera based on window size: {}, {}", objptrAppContext->aRenderContext->windowwidth, objptrAppContext->aRenderContext->windowheight);
         float aspect_ratio = static_cast<float>(objptrAppContext->aRenderContext->windowwidth) / static_cast<float>(objptrAppContext->aRenderContext->windowheight);
         setCameraProjectionMatrix(glm::perspective(
             glm::radians(degreeFOV),

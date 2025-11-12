@@ -42,12 +42,6 @@ void UIDrawSystem::DrawRTTRObject(rttr::instance obj)
                     auto ints = values.get_value<std::vector<int>>();
                     for (auto& v : ints) valueList.emplace_back(v);
                 }
-                // 2️⃣ 判断值类型是 vector<MSAA>
-                else if (values.get_type() == rttr::type::get<std::vector<MSAA>>())
-                {
-                    auto enums = values.get_value<std::vector<MSAA>>();
-                    for (auto& v : enums) valueList.emplace_back(v);
-                }
                 // 3️⃣ 如果本来就是 vector<variant>
                 else if (values.get_type() == rttr::type::get<std::vector<rttr::variant>>())
                 {

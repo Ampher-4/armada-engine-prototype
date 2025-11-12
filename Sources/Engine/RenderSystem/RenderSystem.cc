@@ -16,7 +16,7 @@ RTTR_REGISTRATION
         .constructor<>()
 
         // 注册字段
-        .property("VSync", &RenderContext::vsync)
+        .property("VSync", &RenderContext::getVsync, &RenderContext::setVsync)
         (
         metadata("ui_type", "combo"),
         metadata("options", std::vector<std::string>{"Adaptive", "Off", "On"}),
@@ -26,9 +26,9 @@ RTTR_REGISTRATION
         (
         metadata("ui_type", "combo"),
         metadata("options", std::vector<std::string>{"Off", "2x", "4x", "8x"}),
-        metadata("values", std::vector<MSAA>{MSAA::Off, MSAA::Two, MSAA::Four, MSAA::Eight})
+        metadata("values", std::vector<int>{0, 2, 4, 8})
         )
-        .property("GL Cull Face", &RenderContext::glcullface_enable)
+        .property("GL Cull Face", &RenderContext::getGlCullFace, &RenderContext::setGlCullFace)
         ;
 
 }
@@ -52,9 +52,9 @@ void RenderSystem::parseconfig(cfgRenderSystem config){
     }
 
     if(config.vsync){
-        objptrAppContext->aRenderContext->vsync = Vsync::On;
+        objptrAppContext->aRenderContext->vsync = 1;
     }else {
-        objptrAppContext->aRenderContext->vsync = Vsync::Off;
+        objptrAppContext->aRenderContext->vsync = 0;
     }
 
     objptrAppContext->aRenderContext->windowwidth = config.screenwidth;
@@ -67,12 +67,16 @@ void RenderSystem::init(){
     this->rebuildWindowContext(this->firsttime_init);
 
     auto* geventmangager =  objptrGameEngine->getEventManager();
-    auto* ptrTmpAppCtx = objptrAppContext;
+    auto* rctx = &*objptrAppContext->aRenderContext;
 
-    geventmangager->subscribe(EventType::WindowResizeEvent, [ptrTmpAppCtx](const Event& e) {
-        ptrTmpAppCtx->aRenderContext->contextDirdy = true;
-        ptrTmpAppCtx->aRenderContext->resize_dirty = true;
-        ptrTmpAppCtx->aRenderContext->aCurrentCamera->setCameraDirty();
+    geventmangager->subscribe(EventType::WindowResizeEvent, [rctx](const Event& e) {
+        ENGINE_DEBUG("Window Resize Callback Happened!");
+        int w,h;
+        SDL_GL_GetDrawableSize(rctx->mainwindow,&w, &h);
+        ENGINE_INFO("Window Resize Happened: w:{} h:{}", w, h);
+        glViewport(0,0,w, h);
+        rctx->windowheight = h;rctx->windowwidth = w;
+        rctx->aCurrentCamera->setCameraDirty();
     });
 }
 
@@ -206,9 +210,9 @@ void RenderSystem::RefreshContext(RenderContext* rctx) {
         SDL_DestroyWindow(rctx->mainwindow);
         SDL_GL_ResetAttributes();
 
-        if (rctx->msaa != MSAA::Off) {
+        if (rctx->msaa != 0) {
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, int(rctx->msaa));
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, (rctx->msaa));
         } else {
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
@@ -218,19 +222,12 @@ void RenderSystem::RefreshContext(RenderContext* rctx) {
         // then you will need to reconfig everything again!!!!!
         rebuildWindowContext(false);
 
-        if (rctx->msaa == MSAA::Off)
+        if (rctx->msaa == 0)
             glDisable(GL_MULTISAMPLE);
         else
             glEnable(GL_MULTISAMPLE);
     }
 
-    if (rctx->resize_dirty) {
-        rctx->resize_dirty = false;
-        int w,h;
-        SDL_GL_GetDrawableSize(rctx->mainwindow,&w, &h);
-        glViewport(0,0,w, h);
-        rctx->windowheight = h;rctx->windowwidth = w;
-    }
 
     // Vertical Sync off/on
     SDL_GL_SetSwapInterval(static_cast<int>(rctx->vsync));
