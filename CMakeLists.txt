@@ -32,7 +32,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
-find_package(assimp CONFIG REQUIRED)
+
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 
@@ -259,7 +259,6 @@ function(build_engine_stclib lib_name)
         SDL2::SDL2main
         SDL2_image::SDL2_image
         glm::glm    
-        assimp::assimp
         yaml-cpp::yaml-cpp
         spdlog::spdlog
         EnTT::EnTT

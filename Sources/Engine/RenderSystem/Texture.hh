@@ -8,30 +8,28 @@
 #include <SDL2/SDL_opengl.h>
 #include <Logger.hh>
 
-//decoupling possible? 
-#include <assimp/texture.h>
+// decoupling possible?
 
 using namespace std;
 
 NAMESPACE_BEGIN
-class TextureSdlGl {
+class TextureSdlGl
+{
 
 public:
     TextureSdlGl(string filepathTexture);
-    GLuint getTextureId() {
+    GLuint getTextureId()
+    {
         return textureId;
     }
-    TextureSdlGl(const aiTexture* inmemptr);
 
-
-    ~TextureSdlGl() {
+    ~TextureSdlGl()
+    {
     }
 
 private:
     GLuint textureId;
     GLenum errorClass;
 };
-
-
 
 NAMESPACE_END
