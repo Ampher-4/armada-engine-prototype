@@ -240,6 +240,17 @@ void UIDrawSystem::init(SDL_Window* window, SDL_GLContext glcontext)
 
 }
 
+void UIDrawSystem::reinitForNewContext(SDL_Window* window, SDL_GLContext glcontext)
+{
+    // 注意顺序：先 shutdown，再 init
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+
+    // 使用新的窗口与 GL 上下文重新初始化
+    ImGui_ImplSDL2_InitForOpenGL(window, glcontext);
+    ImGui_ImplOpenGL3_Init("#version 330");
+}
+
 void UIDrawSystem::quit()
 {
     ImGui_ImplOpenGL3_Shutdown();

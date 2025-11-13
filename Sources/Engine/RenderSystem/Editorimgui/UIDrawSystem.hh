@@ -17,6 +17,7 @@ class UIDrawSystem {
 public:
     UIDrawSystem();
 
+    void reinitForNewContext(SDL_Window* window, SDL_GLContext glcontext);
     ~UIDrawSystem(){
         this->quit();
     }

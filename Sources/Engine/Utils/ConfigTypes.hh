@@ -11,11 +11,10 @@ struct cfgRenderSystem {
     int screenheight = 720;
     std::string screenmode = "window";
     bool vsync = false;
-    int antialiasing = 0;
+    int msaa = 0;
     int shadowquality = 0;
     bool glEnableFaceCulling = false;
 
-    std::string sdlimg_format = "png";
 };
 
 struct cfgAssetSystem {

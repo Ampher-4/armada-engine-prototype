@@ -17,11 +17,11 @@ void Config::parseConfig(){
 
     YAML::Node rendersystem = rootNode["rendersystem"];
     if(rendersystem){
-        cfgrendersystem.screenwidth = rendersystem["screenwidth"].as<int>(cfgrendersystem.screenwidth);
         this->cfgrendersystem.screenheight = rendersystem["screenheight"].as<int>(cfgrendersystem.screenheight);
+        cfgrendersystem.screenwidth = rendersystem["screenwidth"].as<int>(cfgrendersystem.screenwidth);
         cfgrendersystem.screenmode = rendersystem["screenmode"].as<std::string>(cfgrendersystem.screenmode);
         cfgrendersystem.vsync = rendersystem["vsync"].as<bool>(cfgrendersystem.vsync);
-
+        cfgrendersystem.msaa = rendersystem["msaa"].as<int>(cfgrendersystem.msaa);
 
 
     }

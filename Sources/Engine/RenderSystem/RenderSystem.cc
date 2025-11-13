@@ -57,6 +57,8 @@ void RenderSystem::parseconfig(cfgRenderSystem config){
         objptrAppContext->aRenderContext->vsync = 0;
     }
 
+    objptrAppContext->aRenderContext->msaa = config.msaa;
+
     objptrAppContext->aRenderContext->windowwidth = config.screenwidth;
     objptrAppContext->aRenderContext->windowheight = config.screenheight;
 
@@ -221,6 +223,9 @@ void RenderSystem::RefreshContext(RenderContext* rctx) {
         //this will destroy all configs above! it means if you modify something, then msaa changes,
         // then you will need to reconfig everything again!!!!!
         rebuildWindowContext(false);
+        //and since imgui based on sdlwindow / glcontext, it needs to be rebuild as well.
+        objptrGameEngine->getUIDrawSystem()->reinitForNewContext(
+            rctx->mainwindow, rctx->glcontext);
 
         if (rctx->msaa == 0)
             glDisable(GL_MULTISAMPLE);

@@ -49,7 +49,7 @@ void Engine::init(){
     aRenderSystem =  make_unique<RenderSystem>(aConfig->cfgrendersystem, getAssetSystem());
     aUIDrawSystem = make_unique<UIDrawSystem>();
     ENGINE_INFO("RenderSystem create success\n");
-    ENGINE_INFO(" StateManager create success\n");
+    ENGINE_INFO("StateManager create success\n");
 
     ENGINE_INFO("Starting creating ECS system cluster.....");
     aStateManager = std::make_unique<entt::registry>();
